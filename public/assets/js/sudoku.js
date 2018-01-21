@@ -48,6 +48,11 @@ let p, sudoku;
                 sudoku.mouseMoved(p.mouseX, p.mouseY);
             };
 
+            p.mouseClicked = function()
+            {
+                sudoku.mouseClicked(p.mouseX, p.mouseY);
+            };
+
         });
     };
 })();
@@ -104,7 +109,7 @@ class Sudoku {
 
     mouseClicked(x, y)
     {
-        this.showPicker(x, y);
+        this.togglePicker(x, y);
     }
 
     /**
@@ -112,9 +117,31 @@ class Sudoku {
      * @param x {Integer}
      * @param y {Integer}
      */
-    showPicker(x, y)
+    togglePicker(x, y)
     {
+        this.hidePickers();
 
+        // find the cell to show the picker for and call them cell method
+        for (let cell of this.board.cells) {
+            if (cell.isInCell(x, y)) {
+                if (!cell.pickerVisible()) {
+                    cell.showPicker(x, y, this.board);
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * Hide all number pickers
+     */
+    hidePickers()
+    {
+        for (let cell of this.board.cells) {
+            if (cell.picker !== null) {
+                cell.picker.showing = false;
+            }
+        }
     }
 
     /**

@@ -20,6 +20,9 @@ class Cell
         this.y = y;
         this.w = w;
         this.h = h;
+
+        this.picker = null;
+        this.picker_showing = false;
     }
 
     /**
@@ -93,6 +96,26 @@ class Cell
                 this.y + 15 + count
             );
             count += 15;
+        }
+    }
+
+    pickerVisible()
+    {
+        return this.picker !== null && this.picker.showing;
+    }
+
+    showPicker(x, y, board)
+    {
+        if (this.picker === null) {
+            this.picker = new Picker(x, y, board, this);
+        }
+        this.picker.showing  = true;
+    }
+
+    hidePicker()
+    {
+        if (this.picker !== null) {
+            this.picker.showing = false;
         }
     }
 

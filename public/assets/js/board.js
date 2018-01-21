@@ -86,6 +86,14 @@ class Board
                 );
             }
         }
+
+        // Draw the picker, if it's showing
+        for (let c_idx = 0; c_idx < this.cells.length; c_idx++) {
+            if (this.cells[c_idx].pickerVisible()) {
+                this.cells[c_idx].picker.draw(p5);
+                break;
+            }
+        }
     }
 
     /**
