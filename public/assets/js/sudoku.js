@@ -119,11 +119,13 @@ class Sudoku {
      */
     togglePicker(x, y)
     {
+        // @todo cope with a mouse click inside the picker
+
         this.hidePickers();
 
         // find the cell to show the picker for and call them cell method
         for (let cell of this.board.cells) {
-            if (cell.isInCell(x, y)) {
+            if (cell.isInCell(x, y) && !cell.initial) {
                 if (!cell.pickerVisible()) {
                     cell.showPicker(x, y, this.board);
                 }

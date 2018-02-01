@@ -22,7 +22,6 @@ class Cell
         this.h = h;
 
         this.picker = null;
-        this.picker_showing = false;
     }
 
     /**
@@ -112,11 +111,9 @@ class Cell
         this.picker.showing  = true;
     }
 
-    hidePicker()
+    getPicker()
     {
-        if (this.picker !== null) {
-            this.picker.showing = false;
-        }
+        return this.picker;
     }
 
     /**
@@ -126,6 +123,20 @@ class Cell
     setValue(value)
     {
         this.value = value;
+    }
+
+    /**
+     * Determines if the passed in value is one of the candidates.
+     * @param {Integer} value
+     */
+    isValueCandidate(value)
+    {
+        for (let candidate of this.candidates) {
+            if (candidate === value) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -149,36 +149,57 @@ class Board
      */
     highlight(x, y)
     {
-        // first, reset  all highlighting
+        let mouse_over_cell = null;
+        let picker_cell = null;
+
+        // Round down due to browser inconsistencies / pixel density
+        x = Math.floor(x);
+        y = Math.floor(y);
+
         for (let cell of this.cells) {
+
+            // reset  all highlighting
             cell.mouse_over = false;
             cell.row_highlight = false;
             cell.col_highlight = false;
             cell.region_highlight = false;
+
+            // do mouse hovering for picker, if visible
+            if (cell.pickerVisible()) {
+                mouse_over_cell = cell;
+            }
         }
 
-        // highlight the cells we want
-        for (let cell_idx = 0; cell_idx < this.cells.length; cell_idx++) {
+        if (mouse_over_cell !== null && mouse_over_cell.picker.mouseInPicker(x, y)) {
+            picker_cell = mouse_over_cell.picker.getPickerCellAt(x, y);
+            if (picker_cell && mouse_over_cell.isValueCandidate(picker_cell.value)) {
+                mouse_over_cell.picker.clearCellHighlight();
+                picker_cell.highlighted = true;
+            }
+        } else {
+            // highlight the cells we want
+            for (let cell_idx = 0; cell_idx < this.cells.length; cell_idx++) {
 
-            let cell = this.cells[cell_idx];
+                let cell = this.cells[cell_idx];
 
-            if (cell.isInCell(x, y)) {
+                if (cell.isInCell(x, y)) {
 
-                cell.mouse_over = true;
+                    cell.mouse_over = true;
 
-                // highlight the row
-                for (let row_cell of this.getRow(this.getRowIdx(cell_idx))) {
-                    row_cell.row_highlight = true;
-                }
+                    // highlight the row
+                    for (let row_cell of this.getRow(this.getRowIdx(cell_idx))) {
+                        row_cell.row_highlight = true;
+                    }
 
-                // highlight the column
-                for (let col_cell of this.getColumn(this.getColIdx(cell_idx))) {
-                    col_cell.col_highlight = true;
-                }
+                    // highlight the column
+                    for (let col_cell of this.getColumn(this.getColIdx(cell_idx))) {
+                        col_cell.col_highlight = true;
+                    }
 
-                // highlight the region
-                for (let region_cell of this.getRegion(this.getRowIdx(cell_idx), this.getColIdx(cell_idx))) {
-                    region_cell.region_highlight = true;
+                    // highlight the region
+                    for (let region_cell of this.getRegion(this.getRowIdx(cell_idx), this.getColIdx(cell_idx))) {
+                        region_cell.region_highlight = true;
+                    }
                 }
             }
         }
