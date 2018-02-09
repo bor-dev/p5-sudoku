@@ -49,6 +49,21 @@ class Picker
     }
 
     /**
+     * Handle a moucse click inside a picker
+     * @param {Integer} x
+     * @param {Integer} y
+     */
+    handleClick(x, y)
+    {
+        let picker_cell = this.getPickerCellAt(x, y);
+        if (picker_cell) {
+            this.cell.setValue(picker_cell.value);
+            this.showing = false;
+            this.board.updateCandidates(this.cell);
+        }
+    }
+
+    /**
      * Get the picker cell (or null) at the passed in x, y coordinates
      * @param {Integer} x
      * @param {Integer} y
@@ -116,13 +131,17 @@ class Picker
                 picker_cell = this.picker_cells[r][c];
 
                 // Update the cell x / y
-                picker_cell.x = Math.floor(this.x + this.cell_width * c);
-                picker_cell.y = Math.floor(this.y + this.cell_height * r);
+                picker_cell.x = Math.floor(this.x + (this.cell_width * c));
+                picker_cell.y = Math.floor(this.y + (this.cell_height * r));
 
                 if (picker_cell.highlighted) {
                     p5.fill(0, 200, 0);
                 } else {
                     p5.fill(255);
+                }
+
+                if (picker_cell.value === this.cell.value) {
+                    p5.fill(255, 255, 0);
                 }
 
                 p5.strokeWeight(1);

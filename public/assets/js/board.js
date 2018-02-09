@@ -9,6 +9,9 @@ class Board
         this.rows = rows;
         this.cols = cols;
 
+        // Set to a Picker instance when it becomes visible.
+        this.visible_picker = null;
+
         this.cell_width = Math.floor(this.width / this.cols);
         this.cell_height = Math.floor(this.height / this.rows);
         this.region_size = 3;
@@ -16,7 +19,7 @@ class Board
         // build the cells
         for (let r_idx = 0; r_idx < this.rows; r_idx++) {
             for (let c_idx = 0; c_idx < this.cols; c_idx++) {
-                let idx = r_idx * this.cols + c_idx;
+                let idx = (r_idx * this.cols) + c_idx;
                 this.cells[idx] = new Cell(
                     this.cell_width * c_idx,
                     this.cell_height * r_idx,
@@ -44,7 +47,7 @@ class Board
                 cell.initial = true;
                 this.updateCandidates(cell);
             } else {
-                cell.value = 0;
+                cell.setValue(0);
                 cell.initial = false;
             }
             count++;
@@ -98,7 +101,6 @@ class Board
 
     /**
      * Update candidates for all cells on the relevant row, column and region.
-     * If any cell ends up with a single candidate, that is set as the value and all candidates are updated again.
      * @param cell {Cell}
      */
     updateCandidates(cell)
@@ -109,36 +111,24 @@ class Board
         if (cell.value > 0) {
             // a value has been set, so clear all candidates in this cell.
             cell.candidates = [];
+        } else {
+            this.candidates = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+            cell.removeCandidate(cell.value);
         }
 
         // row
         for (let c of this.getRow(row_idx)) {
             c.removeCandidate(cell.value);
-            // If there is a single candidate, set that and update the candidates again
-            if (c.candidates.length === 1) {
-                c.setValue(c.candidates[0]);
-                this.updateCandidates(c);
-            }
         }
 
         // column
         for (let c of this.getColumn(col_idx)) {
             c.removeCandidate(cell.value);
-            // If there is a single candidate, set that and update the candidates again
-            if (c.candidates.length === 1) {
-                c.setValue(c.candidates[0]);
-                this.updateCandidates(c);
-            }
         }
 
         // region
         for (let c of this.getRegion(row_idx, col_idx)) {
             c.removeCandidate(cell.value);
-            // If there is a single candidate, set that and update the candidates again
-            if (c.candidates.length === 1) {
-                c.setValue(c.candidates[0]);
-                this.updateCandidates(c);
-            }
         }
     }
 
@@ -214,7 +204,7 @@ class Board
      */
     getCell(row_idx, col_idx)
     {
-        let idx = row_idx * this.cols + col_idx;
+        let idx = (row_idx * this.cols) + col_idx;
         if (this.cells[idx]) {
             return this.cells[idx];
         }
@@ -273,7 +263,7 @@ class Board
     {
         let cells = [];
         for (let i = 0; i < this.rows; i++) {
-            cells[i] = this.cells[i * this.cols + col_index];
+            cells[i] = this.cells[(i * this.cols) + col_index];
         }
         return cells;
     }
@@ -287,25 +277,20 @@ class Board
     {
         let cells = [];
         for (let i = 0; i < this.cols; i++) {
-            cells[i] = this.cells[row_index * this.cols + i];
+            cells[i] = this.cells[(row_index * this.cols) + i];
         }
         return cells;
     }
-}
 
-/*
-
-// Pseudo code for swapping rows and columns
-
-int [] original = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-int [] transpose = new int[original.Length];
-int columns = 3;
-int rows = original.Length/columns;
-for (int i = 0; i < columns; i++)
-{
-    for (int j = 0; j < rows; j++)
+    /**
+     * Hide all number pickers
+     */
+    hidePickers()
     {
-        transpose[i * rows + j] = original[j * columns + i];
+        for (let cell of this.cells) {
+            if (cell.picker !== null) {
+                cell.picker.showing = false;
+            }
+        }
     }
 }
- */

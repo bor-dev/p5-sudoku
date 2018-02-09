@@ -16,15 +16,17 @@ let p, sudoku;
     //             '300090000';
 
     // "Very hard" puzzle
-    var board = '860020000' +
-                '000700059' +
-                '000000000' +
-                '000060800' +
-                '040000000' +
-                '005300007' +
-                '000000000' +
-                '020000600' +
-                '007509000';
+    // var board = '860020000' +
+    //             '000700059' +
+    //             '000000000' +
+    //             '000060800' +
+    //             '040000000' +
+    //             '005300007' +
+    //             '000000000' +
+    //             '020000600' +
+    //             '007509000';
+
+    var board = ".94...13..............76..2.8..1.....32.........2...6.....5.4.......8..7..63.4..8";
 
     window.onload = function() {
 
@@ -109,7 +111,11 @@ class Sudoku {
 
     mouseClicked(x, y)
     {
-        this.togglePicker(x, y);
+        if (this.board.visible_picker && this.board.visible_picker.mouseInPicker(x, y)) {
+            this.board.visible_picker.handleClick(x, y);
+        } else {
+            this.togglePicker(x, y);
+        }
     }
 
     /**
@@ -121,27 +127,17 @@ class Sudoku {
     {
         // @todo cope with a mouse click inside the picker
 
-        this.hidePickers();
+        this.board.hidePickers();
 
         // find the cell to show the picker for and call them cell method
         for (let cell of this.board.cells) {
             if (cell.isInCell(x, y) && !cell.initial) {
                 if (!cell.pickerVisible()) {
                     cell.showPicker(x, y, this.board);
+                    this.board.visible_picker = cell.picker;
+                    console.log(cell);
                 }
                 break;
-            }
-        }
-    }
-
-    /**
-     * Hide all number pickers
-     */
-    hidePickers()
-    {
-        for (let cell of this.board.cells) {
-            if (cell.picker !== null) {
-                cell.picker.showing = false;
             }
         }
     }

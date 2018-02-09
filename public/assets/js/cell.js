@@ -98,22 +98,27 @@ class Cell
         }
     }
 
+    /**
+     * Is the picker for this cell visible?
+     * @returns {boolean}
+     */
     pickerVisible()
     {
         return this.picker !== null && this.picker.showing;
     }
 
+    /**
+     * Shows a picker at position. Returns the picker instance showing.
+     * @param {Integer} x
+     * @param {Integer} y
+     * @param {Integer} board
+     */
     showPicker(x, y, board)
     {
         if (this.picker === null) {
             this.picker = new Picker(x, y, board, this);
         }
         this.picker.showing  = true;
-    }
-
-    getPicker()
-    {
-        return this.picker;
     }
 
     /**
